@@ -5,7 +5,18 @@ import java.net.InetSocketAddress
 fun main() {
     val server = HttpServer.create(InetSocketAddress(8080), 0)
 
-    // Création des 6 cartes
+    // Création des composants
+    val navbar = BootstrapNavbar(
+        brand = "Hello World",
+        links = listOf(
+            Pair("Accueil", "/"),
+            Pair("À propos", "/about"),
+            Pair("Contact", "/contact")
+        )
+    )
+
+    val footer = BootstrapFooter("© 2025 Hello World. Tous droits réservés.")
+
     val cards = listOf(
         BootstrapCard("Card 1", "Contenu de la première card"),
         BootstrapCard("Card 2", "Contenu de la deuxième card"),
@@ -15,6 +26,9 @@ fun main() {
         BootstrapCard("Card 6", "Contenu de la sixième card")
     )
 
+    val container = BootstrapContainer(cards.map { it.render() })
+
+    // Route "/"
     server.createContext("/") { exchange ->
         val response = """
             <!DOCTYPE html>
@@ -25,14 +39,80 @@ fun main() {
                     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
                 </head>
                 <body>
+                    ${navbar.render()}
                     <div class="container mt-4">
                         <h1 class="text-center text-primary">Hello World</h1>
-                        <div class="row mt-4">
-                            ${cards.joinToString("\n") { card ->
-            """<div class="col-12 col-sm-6 col-md-4 mb-4">${card.render()}</div>"""
-        }}
-                        </div>
                     </div>
+                    ${container.render()}
+                    ${footer.render()}
+                    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+                </body>
+            </html>
+        """.trimIndent()
+
+        val bytes = response.toByteArray()
+        exchange.sendResponseHeaders(200, bytes.size.toLong())
+        exchange.responseBody.use { it.write(bytes) }
+    }
+
+    // Route "/about"
+    server.createContext("/about") { exchange ->
+        val response = """
+            <!DOCTYPE html>
+            <html>
+                <head>
+                    <meta charset="UTF-8">
+                    <title>À propos</title>
+                    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+                </head>
+                <body>
+                    ${navbar.render()}
+                    <div class="container mt-4">
+                        <h1 class="text-primary">À propos</h1>
+                        <p>Ce site est un projet scolaire en Kotlin avec Bootstrap.</p>
+                    </div>
+                    ${footer.render()}
+                    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+                </body>
+            </html>
+        """.trimIndent()
+
+        val bytes = response.toByteArray()
+        exchange.sendResponseHeaders(200, bytes.size.toLong())
+        exchange.responseBody.use { it.write(bytes) }
+    }
+
+    // Route "/contact"
+    server.createContext("/contact") { exchange ->
+        val response = """
+            <!DOCTYPE html>
+            <html>
+                <head>
+                    <meta charset="UTF-8">
+                    <title>Contact</title>
+                    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+                </head>
+                <body>
+                    ${navbar.render()}
+                    <div class="container mt-4">
+                        <h1 class="text-primary">Contact</h1>
+                        <form>
+                            <div class="mb-3">
+                                <label class="form-label">Nom</label>
+                                <input type="text" class="form-control" placeholder="Votre nom">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-control" placeholder="Votre email">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Message</label>
+                                <textarea class="form-control" rows="3" placeholder="Votre message"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Envoyer</button>
+                        </form>
+                    </div>
+                    ${footer.render()}
                     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
                 </body>
             </html>
