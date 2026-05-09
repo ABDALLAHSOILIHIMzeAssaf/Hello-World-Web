@@ -230,7 +230,7 @@ Le projet utilise la grille Bootstrap pour s'adapter à tous les écrans :
 
 ## 👨‍💻 Auteur
 
-**ABDALLAHSOILIHIMzeAssaf**
+**Mzé ABDALLAH SOILIHI**
 Projet réalisé dans le cadre d'un cours de développement Kotlin.
 
 ---
